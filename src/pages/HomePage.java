@@ -211,23 +211,30 @@ public class HomePage extends JFrame {
         newTaskField.setFont(new Font("Segoe UI", Font.PLAIN, 16));
         priorityComboBox = new JComboBox<>(new String[]{"Low", "Medium", "High"});
         priorityComboBox.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-    
+
         DatePicker datePicker = new DatePicker();
-    
+
         panel.add(new JLabel("Task:"));
         panel.add(newTaskField);
         panel.add(new JLabel("Priority:"));
         panel.add(priorityComboBox);
         panel.add(new JLabel("Due Date:"));
         panel.add(datePicker);
-    
+
         int result = JOptionPane.showConfirmDialog(null, panel, "Add New Task",
                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
         if (result == JOptionPane.OK_OPTION) {
-            addTask(datePicker.getDate());
+            LocalDate selectedDate = datePicker.getDate();
+            LocalDate currentDate = LocalDate.now();
+
+            if (selectedDate == null || selectedDate.isBefore(currentDate)) {
+                JOptionPane.showMessageDialog(null, "The selected due date is in the past. Please choose a valid date.",
+                        "Invalid Date", JOptionPane.ERROR_MESSAGE);
+            } else {
+                addTask(selectedDate);
+            }
         }
     }
-    
 
     private void addTask(LocalDate dueDate) {
         String content = newTaskField.getText();

@@ -41,6 +41,7 @@ public class UserDao {
             return rowsAffected > 0;
         } catch (SQLException e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(null, e.getMessage(),"Failure",JOptionPane.ERROR_MESSAGE);
             return false;
         }
     }

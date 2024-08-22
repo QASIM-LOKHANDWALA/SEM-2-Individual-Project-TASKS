@@ -78,7 +78,7 @@ public class LeaderboardPage extends JFrame {
         for (int i = 0; i < size; i++) {
             LeaderboardEntry entry = entries.dequeue();
             addLeaderboardEntry(card, i + 1, entry);
-            if (i < entries.currentSize()) {
+            if (i < entries.capacity()) {
                 card.add(new JSeparator());
             }
         }

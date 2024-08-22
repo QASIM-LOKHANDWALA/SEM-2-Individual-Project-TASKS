@@ -40,3 +40,24 @@ BEGIN
     ORDER BY tasks_completed DESC, reg_date ASC;
 END$$
 DELIMITER ;
+
+-- ADD TASKS TO TABLES
+DELIMITER $$
+CREATE PROCEDURE `addTaskForUser`(
+    IN p_userId INT,
+    IN p_content VARCHAR(255),
+    IN p_priorityId INT,
+    IN p_dueDate DATE
+)
+BEGIN
+    DECLARE last_task_id INT;
+    
+    INSERT INTO tasks (content, priority_id, due_date)
+    VALUES (p_content, p_priorityId, p_dueDate);
+
+    SET last_task_id = LAST_INSERT_ID();
+
+    INSERT INTO user_tasks (user_id, task_id)
+    VALUES (p_userId, last_task_id);
+END$$
+DELIMITER ;

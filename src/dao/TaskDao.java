@@ -19,24 +19,13 @@ public class TaskDao {
     }
 
     public void addTask(int userId, String content, int priorityId, LocalDate dueDate) {
-        String sqlTask = "INSERT INTO tasks (content, priority_id, due_date) VALUES (?, ?, ?)";
-        String sqlUserTask = "INSERT INTO user_tasks (user_id, task_id) VALUES (?, ?)";
-        try (PreparedStatement pstmtTask = con.prepareStatement(sqlTask, Statement.RETURN_GENERATED_KEYS)) {
-            pstmtTask.setString(1, content);
-            pstmtTask.setInt(2, priorityId);
-            pstmtTask.setDate(3, java.sql.Date.valueOf(dueDate));
-            pstmtTask.executeUpdate();
-
-            ResultSet generatedKeys = pstmtTask.getGeneratedKeys();
-            if (generatedKeys.next()) {
-                int taskId = generatedKeys.getInt(1);
-
-                try (PreparedStatement pstmtUserTask = con.prepareStatement(sqlUserTask)) {
-                    pstmtUserTask.setInt(1, userId);
-                    pstmtUserTask.setInt(2, taskId);
-                    pstmtUserTask.executeUpdate();
-                }
-            }
+        String call = "{CALL addTaskForUser(?, ?, ?, ?)}";
+        try (CallableStatement stmt = con.prepareCall(call)) {
+            stmt.setInt(1, userId);
+            stmt.setString(2, content);
+            stmt.setInt(3, priorityId);
+            stmt.setDate(4, java.sql.Date.valueOf(dueDate));
+            stmt.execute();
         } catch (SQLException e) {
             e.printStackTrace();
         }
